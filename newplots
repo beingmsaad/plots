@@ -1,0 +1,316 @@
+import numpy as np
+import pandas as pd
+from random import seed
+from random import random
+import matplotlib.pyplot as plt
+# for x in range(10,56,5):
+#     a = 0.5586
+#     # b = 0.392
+#     a1 = x/100
+#     a2 = a-a1
+#
+#     b1 = 0.2163
+#     b2 = 0.2073
+#     b = b1+b2
+#     f = a1*(1-a2)*(1-b1)*(1-b2) + (a1*(a2)*(1-b1)*(1-b2)) + (a1*(1-a2)*(b1)*(1-b2)) + (a1*(1-a2)*(1-b1)*(b2)) + (a1*(1-a2)*(b1)*(b2)) + (a1*(a2)*(b1)*(1-b2)) + (a1*(a2)*(1-b1)*(b2)) + (a1*(a2)*(b1)*(b2)) + (a2*(1-a1)*(b1)*(1-b2)) + (a2*(1-a1)*(1-b1)*(b2)) +  (a2*(1-a1)*(b1)*(b2)) + (b1*(1-a1)*(1-a2)*(b2)) + ((1-a1)*(1-a2)*(1-b1)*(1-b2))
+#     r = (a2*(1-a1)*(1-b1)*(1-b2)) + ((b1)*(1-a1)*(1-a2)*(1-b2)) + ((b2)*(1-a1)*(1-a2)*(1-b1))
+#
+#     f1 = f
+#     r1 = r
+#
+#     a = 0.593
+#     a1 = x/100
+#     a2 = a-a1
+#     a = a1+a2
+#     b1 = 0.2005
+#     b2 = 0.1915
+#     b = b1+b2
+#     f = a1*(1-a2)*(1-b1)*(1-b2) + (a1*(a2)*(1-b1)*(1-b2)) + (a1*(1-a2)*(b1)*(1-b2)) + (a1*(1-a2)*(1-b1)*(b2)) + (a1*(1-a2)*(b1)*(b2)) + (a1*(a2)*(b1)*(1-b2)) + (a1*(a2)*(1-b1)*(b2)) + (a1*(a2)*(b1)*(b2)) + (a2*(1-a1)*(b1)*(1-b2)) + (a2*(1-a1)*(1-b1)*(b2)) +  (a2*(1-a1)*(b1)*(b2)) + (b1*(1-a1)*(1-a2)*(b2)) + ((1-a1)*(1-a2)*(1-b1)*(1-b2))
+#     r = (a2*(1-a1)*(1-b1)*(1-b2)) + ((b1)*(1-a1)*(1-a2)*(1-b2)) + ((b2)*(1-a1)*(1-a2)*(1-b1))
+#
+#     f2 = f
+#     r2 = r
+#
+#
+#     P = np.array([[f1, r1],
+#                   [f2, r2]])
+#     state=np.array([[0.5, 0.5]])
+#     stateHist=state
+#     dfStateHist=pd.DataFrame(state)
+#     distr_hist = [[0,0]]
+#     for x in range(6):
+#       state=np.dot(state,P)
+#
+#     print(state)
+# stateHist=np.append(stateHist,state,axis=0)
+# dfDistrHist = pd.DataFrame(stateHist)
+# dfDistrHist.plot()
+# plt.show()
+
+import pandas as pd
+import seaborn as sns
+import scipy.stats as stats
+import numpy as np
+plt.figure(figsize=(9,3), dpi=100)
+
+
+def dns_bn():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/Plot.csv', delimiter=',')
+    bn = df['Bitnodes']
+    dns = df['DNS']
+    common = df['Common']
+    time = df['time']
+    low = []
+    for x in range(0,len(bn)):
+        low.append(np.min(common)-100)
+
+
+    plt.fill_between(time, dns, bn, color="#224392", alpha=0.2)
+    plt.fill_between(time, common, dns, color="#6ab9cb", alpha=0.7)
+    plt.fill_between(time, low, common, color="#4dbcd3", alpha=0.4)
+
+    plt.plot(time,bn,linewidth=2, color='#1a237c', label='Bitnodes')
+    plt.plot(time,dns,linewidth=2, color='#1a237c', alpha= 0.8,linestyle='-.', label='DNS')
+    plt.plot(time,common,linewidth=2, color='#1a237c',alpha=0.5,linestyle=':', label='Common')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+              ncol=3, fancybox=True)
+    plt.xlabel('Sample Time',fontsize=12)
+    plt.ylabel('Number of Addresses',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/prelim.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+
+def ban():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/Plot.csv', delimiter=',')
+    bn = df['Bitnodes Ban']
+    dns = df['DNS Ban']
+    common = df['Common Ban']
+    time = df['time']
+    low = []
+    for x in range(0,len(bn)):
+        low.append(np.min(common)-100)
+
+
+    plt.fill_between(time, dns, bn, color="#224392", alpha=0.2)
+    plt.fill_between(time, common, dns, color="#6ab9cb", alpha=0.7)
+    plt.fill_between(time, low, common, color="#4dbcd3", alpha=0.4)
+
+    plt.plot(time,bn,linewidth=2, color='#1a237c', label='Bitnodes Blacklist')
+    plt.plot(time,dns,linewidth=2, color='#1a237c', alpha= 0.8,linestyle='-.', label='DNS Blacklist')
+    plt.plot(time,common,linewidth=2, color='#1a237c',alpha=0.5,linestyle=':', label='Common Blacklist')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+              ncol=3, fancybox=True)
+    plt.xlabel('Sample Time',fontsize=12)
+    plt.ylabel('Number of Addresses',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/prelim_ban.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+def rb():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/reachable.csv', delimiter=',')
+    bn = df['reachable']
+    time = df['time']
+    low = []
+    for x in range(0,len(bn)):
+        low.append(np.min(bn)-100)
+
+
+    plt.fill_between(time, low, bn, color="#224392", alpha=0.2)
+
+    plt.plot(time,bn,linewidth=2, color='#1a237c', label='Connected')
+    # plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+    #           ncol=3, fancybox=True)
+    plt.xlabel('Sample Time',fontsize=12)
+    plt.ylabel('Number of Addresses',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/rb.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+def bn():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/bn.csv', delimiter=',')
+    bn = df['bitnodes']
+    time = df['time']
+    low = []
+    for x in range(0,len(bn)):
+        low.append(0)
+
+
+    plt.fill_between(time, low, bn, color="#224392", alpha=0.2)
+
+    plt.plot(time,bn,linewidth=2, color='#1a237c', label='Connected')
+    # plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+    #           ncol=3, fancybox=True)
+    plt.xlabel('Sample Time',fontsize=12)
+    plt.ylabel('Number of Addresses',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/bn.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+
+def urb():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/urb_two.csv', delimiter=',')
+    urb = df['urb']
+    round = df['round']
+    time = df['time']
+    low = []
+    for x in range(0,len(urb)):
+        low.append(np.min(round)-0)
+
+
+    plt.fill_between(time, round, urb, color="#224392", alpha=0.2)
+    plt.fill_between(time, low, round, color="#6ab9cb", alpha=0.7)
+    # plt.fill_between(time, low, common, color="#4dbcd3", alpha=0.4)
+
+    plt.plot(time,urb,linewidth=2, color='#1a237c', label='Cumulative')
+    plt.plot(time,round,linewidth=2, color='#1a237c', alpha= 0.8,linestyle='-.', label='Per Sample')
+    # plt.plot(time,common,linewidth=2, color='#1a237c',alpha=0.5,linestyle=':', label='Common')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+              ncol=3, fancybox=True)
+    plt.xlabel('Sample Time',fontsize=12)
+    plt.ylabel('Number of Addresses',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/urb.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+def alive():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/alive.csv', delimiter=',')
+    round = df['Individual']
+    urb = df['Cumulative']
+    time = df['time']
+    low = []
+    for x in range(0,len(urb)):
+        low.append(np.min(round)-0)
+
+
+    plt.fill_between(time, round, urb, color="#224392", alpha=0.2)
+    plt.fill_between(time, low, round, color="#6ab9cb", alpha=0.7)
+    # plt.fill_between(time, low, common, color="#4dbcd3", alpha=0.4)
+
+    plt.plot(time,urb,linewidth=2, color='#1a237c', label='Cumulative')
+    plt.plot(time,round,linewidth=2, color='#1a237c', alpha= 0.8,linestyle='-.', label='Per Sample')
+    # plt.plot(time,common,linewidth=2, color='#1a237c',alpha=0.5,linestyle=':', label='Common')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+              ncol=3, fancybox=True)
+    plt.xlabel('Sample Time',fontsize=12)
+    plt.ylabel('Number of Addresses',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/alive.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+
+def bw():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/plots/nodecount.csv', delimiter=',')
+    og = df['Outgoing']
+    inc = df['Incoming']
+    time = df['Time']
+    low = []
+    for x in range(0,len(og)):
+        low.append(0)
+
+
+    plt.fill_between(time, inc, og, color="#224392", alpha=0.2)
+    plt.fill_between(time, low, inc, color="#6ab9cb", alpha=0.7)
+    # plt.fill_between(time, low, common, color="#4dbcd3", alpha=0.4)
+
+    plt.plot(time,og,linewidth=2, color='#1a237c', label='Outgoing')
+    plt.plot(time,inc,linewidth=2, color='#1a237c', alpha= 0.8,linestyle='-.', label='Incoming')
+    # plt.plot(time,common,linewidth=2, color='#1a237c',alpha=0.5,linestyle=':', label='Common')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+              ncol=3, fancybox=True)
+    plt.xlabel('Time (seconds)',fontsize=12)
+    plt.ylabel('Bandwidth (Mbps)',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/bw.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+def nc():
+    df = pd.read_csv('/home/saad/Desktop/bitcoinmap/plots/nodecount.csv', delimiter=',')
+    nc = df['Node Count']
+    time = df['Time']
+    low = []
+    for x in range(0,len(nc)):
+        low.append(0)
+
+
+    plt.fill_between(time, low, nc, color="#224392", alpha=0.2)
+    # plt.fill_between(time, low, inc, color="#6ab9cb", alpha=0.7)
+    # plt.fill_between(time, low, common, color="#4dbcd3", alpha=0.4)
+
+    plt.plot(time,nc,linewidth=2, color='#1a237c', label='Outgoing')
+    # plt.plot(time,inc,linewidth=2, color='#1a237c', alpha= 0.8,linestyle='-.', label='Incoming')
+    # plt.plot(time,common,linewidth=2, color='#1a237c',alpha=0.5,linestyle=':', label='Common')
+    # plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+    #           ncol=3, fancybox=True)
+    plt.xlabel('Time (seconds)',fontsize=12)
+    plt.ylabel('Node Count',fontsize=12)
+    plt.margins(0,0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/nc.pdf', transparent = True, bbox_inches = 'tight', pad_inches = 0)
+
+
+
+def cdf():
+    import numpy as np
+    import collections
+    rb = []
+    lines = open('/home/saad/Desktop/bitcoinmap/rch_as.txt').read().splitlines()
+    print(len(lines))
+    for line in lines:
+        rb.append(line.split(' ')[0])
+    occurrences = collections.Counter(rb)
+    rb = list(occurrences.values())
+    sum = np.sum(rb)
+    for i in range(0,len(rb)):
+        rb[i] = rb[i]/sum
+    rb.sort(reverse=True)
+    rb = np.cumsum(rb)
+
+    urb = []
+    lines = open('/home/saad/Desktop/bitcoinmap/unrch_asn.txt').read().splitlines()
+    print(len(lines))
+    for line in lines:
+        if(str(line.split(' ')[0]) != 'NA'):
+            urb.append(line.split(' ')[0])
+    occurrences = collections.Counter(urb)
+    urb = list(occurrences.values())
+    sum = np.sum(urb)
+    for i in range(0,len(urb)):
+        urb[i] = urb[i]/sum
+    urb.sort(reverse=True)
+    for i in range(0,20):
+        print(100*urb[i])
+    urb = np.cumsum(urb)
+    time = []
+    rb = list(rb)
+    urb = list(urb)
+    for i in range(0,len(urb)):
+        time.append(i)
+    for i in range(len(rb),len(urb)):
+        rb.append(1)
+    low = []
+    for x in range(0,len(urb)):
+        low.append(rb[x]-urb[x])
+
+    plt.fill_between(time, urb, rb, color="#224392", alpha=0.2)
+    plt.fill_between(time, low, urb, color="#6ab9cb", alpha=0.7)
+    # plt.fill_between(time, low, common, color="#4dbcd3", alpha=0.4)
+
+    plt.plot(time, rb, linewidth=2, color='#1a237c', label='Reachable')
+    plt.plot(time, urb, linewidth=2, color='#1a237c', alpha=0.8, linestyle='-.', label='Unreachable')
+    # plt.plot(time,common,linewidth=2, color='#1a237c',alpha=0.5,linestyle=':', label='Common')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.09),
+               ncol=3, fancybox=True)
+    plt.xlabel('Number of ASes', fontsize=12)
+    plt.ylabel('CDF', fontsize=12)
+    plt.margins(0, 0)
+    plt.savefig('/home/saad/Desktop/bitcoinmap/cdf.pdf', transparent=True, bbox_inches='tight', pad_inches=0)
+
+
+
+
+
+
+
+
+# nc()
+#bw()
+# urb()
+alive()
+#bn()
+#rb()
+# ban()
+# dns_bn()
+# cdf()
